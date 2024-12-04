@@ -26,14 +26,16 @@ struct TtData {
     uint8_t bound;
 };
 
-// 8MB. Replaced for TCEC builds by the minifier.
-#define HASH_SIZE 1048576
-auto TT = new atomic<TtData>[HASH_SIZE]();
+// 3MB. for FIDE kaggle comp
+#define MAX_RAM_USAGE_MB 3  // Maximum RAM usage in MiB
+#define TT_ENTRY_SIZE sizeof(TtData)
+#define MAX_TT_ENTRIES ((MAX_RAM_USAGE_MB * 1024 * 1024) / TT_ENTRY_SIZE)
+auto TT = new atomic<TtData>[MAX_TT_ENTRIES]();
 
 #ifdef OPENBENCH
-int TT_SIZE = HASH_SIZE;
+int TT_SIZE = MAX_TT_ENTRIES;
 #else
-#define TT_SIZE HASH_SIZE
+#define TT_SIZE MAX_TT_ENTRIES
 #endif
 
 struct Board {
